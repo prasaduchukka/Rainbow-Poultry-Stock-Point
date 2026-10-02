@@ -61,10 +61,19 @@ function editVehicle(id) {
 }
 
 async function deleteVehicle(id) {
-  if (!confirm('Permanently delete this vehicle record? This cannot be undone.')) return;
+  const vehicle = allVehicles.find(v => v.id === id);
+  if (!vehicle) return;
+
+  const confirmed = confirm(
+    `Permanently delete vehicle "${vehicle.vehicleNumber}"?\n\n` +
+    `Deletion is allowed only when this vehicle has never been used in a trip.\n\n` +
+    `If this vehicle has trip/history records, the system will protect those records and block the deletion.\n\n` +
+    `Continue?`
+  );
+  if (!confirmed) return;
   try {
     await Api.del(`/api/vehicles/${id}`);
-    showToast('Vehicle deleted');
+    showToast(`Vehicle ${vehicle.vehicleNumber} deleted`);
     await loadVehicles();
   } catch (err) { handleError(err); }
 }

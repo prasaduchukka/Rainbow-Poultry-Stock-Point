@@ -14,6 +14,7 @@ import com.vpf.exception.ResourceNotFoundException;
 import com.vpf.repository.DeliveryRepository;
 import com.vpf.repository.PurchaseRepository;
 import com.vpf.repository.TripRepository;
+import com.vpf.repository.VehicleRepository;
 import com.vpf.repository.CustomerOrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,7 @@ import java.util.List;
 public class TripService {
 
     private final TripRepository tripRepository;
+    private final VehicleRepository vehicleRepository;
     private final DeliveryRepository deliveryRepository;
     private final PurchaseRepository purchaseRepository;
     private final LedgerService ledgerService;
@@ -81,12 +83,20 @@ public class TripService {
     public Trip createNewTrip(LocalDate date, TripInfo info) {
         String vehicleNumber = info.getVehicleNumber().trim();
 
+        // A trip must always point to a real vehicle master record.
+        // Keeping the vehicleNumber snapshot as well preserves existing reports
+        // and historical data while the FK establishes the real relationship.
+        com.vpf.entity.Vehicle vehicle = vehicleRepository.findByVehicleNumber(vehicleNumber)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Vehicle not found: " + vehicleNumber + ". Select a registered vehicle."));
+
         Integer nextTripNumber = tripRepository
                 .findTopByVehicleNumberAndTripDateOrderByTripNumberDesc(vehicleNumber, date)
                 .map(t -> t.getTripNumber() + 1)
                 .orElse(1);
 
         Trip t = new Trip();
+        t.setVehicle(vehicle);
         t.setVehicleNumber(vehicleNumber);
         t.setTripDate(date);
         t.setTripNumber(nextTripNumber);

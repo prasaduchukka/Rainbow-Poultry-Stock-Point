@@ -43,4 +43,4 @@ app:
     password: ${ADMIN_PASSWORD:admin123}
 
   cors:
-    allowed-origins: ${ALLOWED_ORIGINS:https://rainbow-poultry-stock-point-production.up.railway.app, http://localhost:5500,http://127.0.0.1:5500,http://localhost:8088}
+    allowed-origins: ${ALLOWED_ORIGINS:https://www.rainbowpoultrystockpoint.in,https://rainbow-poultry-stock-point-production.up.railway.app, http://localhost:5500,http://127.0.0.1:5500,http://localhost:8088}

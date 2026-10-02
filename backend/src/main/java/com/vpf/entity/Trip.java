@@ -34,9 +34,14 @@ public class Trip extends BaseAuditEntity {
     @Column(nullable = false)
     private LocalDate tripDate;
 
+    // @Column(nullable = false)
+    // private String vehicleNumber;
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "vehicle_id")
+    private Vehicle vehicle;
+
     @Column(nullable = false)
     private String vehicleNumber;
-
     /**
      * Display-only sequence number (Trip 1, Trip 2, ...) for this vehicle on this date.
      * Auto-assigned - never entered by the user. Nullable at the DB level (not

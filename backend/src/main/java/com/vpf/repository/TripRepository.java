@@ -19,6 +19,12 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
 
     List<Trip> findByVehicleNumberAndTripDateOrderByTripNumberAsc(String vehicleNumber, LocalDate tripDate);
 
+    /** True when a trip is explicitly related to this vehicle master record. */
+    boolean existsByVehicle_Id(Long vehicleId);
+
+    /** Legacy/history fallback for trips created before vehicle_id was introduced. */
+    boolean existsByVehicleNumber(String vehicleNumber);
+    
     Optional<Trip> findTopByVehicleNumberAndTripDateOrderByTripNumberDesc(String vehicleNumber, LocalDate tripDate);
 
     List<Trip> findByVehicleNumberOrderByTripDateDesc(String vehicleNumber);
